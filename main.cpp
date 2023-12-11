@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
+#include <map>
 using namespace std;
 
 
@@ -11,7 +11,7 @@ vector <int> findDivizors(int n) {
     vector <int> divizors;
     for (int i = 1; i <= n; i++) {
         if (n % i == 0) {
-            divizors.push_back(i);
+            divizors.emplace_back(i);
         }
     }
     return divizors;
@@ -33,28 +33,41 @@ int lcm(int a, int b) {
 }
 
 //проверка числа на простоту
-bool IsPrimeNumber(int n) {
+string IsPrimeNumber(int n) {
     vector <int> divizors = findDivizors(n);
     if (divizors.size() == 2) {
-        return true;
+        return "|Является простым";
     }
     else {
-        return false;
+        return "|Не является простым";
     }
 }
 
 //проверка совершенных чисел
-bool isPerfectNumber(int n) {
+string isPerfectNumber(int n) {
+    int sum = 0,i=0;
     if (n <= 0) {
-        return false;
+        return "|Не является совершенным";
     }
-    int sum = 0;
-    for (int i = 1; i <= n / 2; i++) {
+    vector <int> divizors = findDivizors(n);
+    while ( i < divizors.size()){
+        if (i<=n){
+            sum = sum+i;
+            i++;
+        }
+    }
+
+    /*for (int i = 1; i <= n / 2; i++) {
         if (n % i == 0) {
             sum += i;
         }
+    }*/
+    if (sum == n){
+        return "|Является совершенным";
+    }else{
+        return "|Не является совершенным";
     }
-    return sum == n;
+
 }
 //Калькулятор
 int typeChange(string digit) {
@@ -92,10 +105,11 @@ pair<int,pair<char,int>> Calc(string num1, char op, string num2) {
         denom = lcm(num1Unfolded[1], num2Unfolded[1]);
         cout << numer << '/' << denom << endl;
         return {numer, {slash, denom}};
+        default:    cout << "op is undefined";
     }
 }
 
-void UnitTests() {
+/*void UnitTests() {
     //Блок проверок на простоту
     assert(IsPrimeNumber(14) == false); //Не простое
     assert(IsPrimeNumber(11) == true); //Простое
@@ -118,20 +132,41 @@ void UnitTests() {
     //Проверка калькулятора
     //assert(calc('1/2','+', '1/3')=='5/6');
 }
+ */
+class Numbers{
+    public:
+        int number;
+        vector <int> divizors;
+        string perfect,prime;
+        void Print(){
+            cout << "[Число: " << number << endl
+            << perfect << endl
+            << prime << endl
+            << "----------------" << endl;
+        }
+};
 
+map<int,vector <int>> user_numbers;
+void isNumMap(int n) {
+    if (user_numbers.find(n) == user_numbers.end()){
+        user_numbers.emplace(n, (findDivizors(n)));
+    };
+};
 int main() {
-    UnitTests();
-    int number;
-    cout << "Каклькулятор - введите '1'.Проверка 2 чисел НОД, НОК, простоту, совершенность, введите '2'" << endl << "Ввод: ";cin >> number;
-    if (number == 2) {
-        int number1, number2;
-        cout << "Введите 2 два числа через пробел: "; cin >> number1 >> number2;
-        cout << "Число " << number1 << (IsPrimeNumber(number1) ? " является простым" : " НЕ является простым") << endl << "Число " << number2 << (IsPrimeNumber(number1) ? " является простым" : " НЕ является простым") << endl << "Число " << number1 << (isPerfectNumber(number1) ? " является совершенным" : " НЕ является совершенным") << endl << "Число " << number2 << (isPerfectNumber(number2) ? " является совершенным" : " НЕ является совершенным") << endl << "НОД: " << gcd(number1, number2) << ", НОК: " << lcm(number1, number2) << endl;
-    }
-    else if (number == 1) {
-        string num1, num2;
-        char op;
-        cout << "Введите первое число: "; cin >> num1; cout << "Введите оператор(+/-): "; cin >> op; cout << "Введите второе число: "; cin >> num2;
-        Calc(num1, op, num2);
+    int number = -1; char op; string calc_num1, calc_num2;
+    while (number) {
+        cout << "Меню: \n  \tКаклькулятор - '1'. \n \tПроверка 2 чисел НОД, НОК, простоту, совершенность - '2' \n Ввод: ";
+        cin >> number;
+        if (number == 2) {
+            Numbers num1; Numbers num2;
+            cout << "Калькулятор: \nВведите два числа через пробел: "; cin >> num1.number >> num2.number; cout << "----------------" << endl;
+            isNumMap(num1.number);
+            num1.perfect = isPerfectNumber(num1.number); num1.prime = IsPrimeNumber(num1.number);num1.Print();
+            num2.perfect = isPerfectNumber(num2.number); num2.prime = IsPrimeNumber(num2.number);num2.Print();
+            cout <<"|Наибольшее общий делитель: "<< lcm(num1.number,num2.number) << endl << "|Наименьшее общее кратное: "<< gcd(num1.number,num2.number) <<endl << "----------------" <<endl;
+        }
+        else if (number == 1) {
+            cout << "Проверка: \nВведите первое число: "; cin >> calc_num1; cout << "Введите оператор(+/-): "; cin >> op; cout << "Введите второе число: "; cin >> calc_num2;cout << "Ответ: ";Calc(calc_num1, op, calc_num2);
+        };
     } return 0;
 }
