@@ -57,11 +57,6 @@ string isPerfectNumber(int n) {
         }
     }
 
-    /*for (int i = 1; i <= n / 2; i++) {
-        if (n % i == 0) {
-            sum += i;
-        }
-    }*/
     if (sum == n){
         return "|Является совершенным";
     }else{
@@ -95,55 +90,35 @@ pair<int,pair<char,int>> Calc(string num1, char op, string num2) {
     char slash = '/';
     int numer, denom;
     switch (op) {
-    case '+':
-        numer = num1Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num1Unfolded[1]) + num2Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num2Unfolded[1]);
-        denom = lcm(num1Unfolded[1], num2Unfolded[1]);
-        cout << numer << '/' << denom << endl;
-        return {numer, {slash, denom}};
-    case '-':
-        numer = num1Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num1Unfolded[1]) - num2Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num2Unfolded[1]);
-        denom = lcm(num1Unfolded[1], num2Unfolded[1]);
-        cout << numer << '/' << denom << endl;
-        return {numer, {slash, denom}};
+        case '+':
+            numer = num1Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num1Unfolded[1]) + num2Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num2Unfolded[1]);
+            denom = lcm(num1Unfolded[1], num2Unfolded[1]);
+            cout << numer << '/' << denom << endl;
+            return {numer, {slash, denom}};
+        case '-':
+            numer = num1Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num1Unfolded[1]) - num2Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num2Unfolded[1]);
+            denom = lcm(num1Unfolded[1], num2Unfolded[1]);
+            cout << numer << '/' << denom << endl;
+            return {numer, {slash, denom}};
         default:    cout << "op is undefined";
     }
 }
 
-/*void UnitTests() {
-    //Блок проверок на простоту
-    assert(IsPrimeNumber(14) == false); //Не простое
-    assert(IsPrimeNumber(11) == true); //Простое
-    assert(IsPrimeNumber(0) == false); //Не простое
-    assert(IsPrimeNumber(1) == false);// Не простое
-    //Блок проверок на совершенность
-    assert(isPerfectNumber(14) == false); //Не совершенное
-    assert(isPerfectNumber(28) == true); //Cовершенное
-    assert(isPerfectNumber(0) == false); // Не совершенное
-    assert(isPerfectNumber(-4) == false); //Не совершенное
-    //Проверка нахождения НОД
-    assert(gcd(14, 28) == 14);
-    assert(gcd(-231, -140) == 7);
-    assert(gcd(0, 13) == 13);
-    //Проверка нахождения НОК
-    assert(lcm(14, 28) == 28);
-    assert(lcm(-231, -140) == 4620);
-    assert(lcm(0, 28) == 0);
-    cout << "All tests OK" << endl;
-    //Проверка калькулятора
-    //assert(calc('1/2','+', '1/3')=='5/6');
-}
- */
+
 class Numbers{
-    public:
-        int number;
-        vector <int> divizors;
-        string perfect,prime;
-        void Print(){
-            cout << "[Число: " << number << endl
-            << perfect << endl
-            << prime << endl
-            << "----------------" << endl;
-        }
+public:
+    int number;
+    vector <int> divizors;
+    string perfect,prime;
+    int solve(string equation){
+            return atoi(equation.c_str());
+    }
+    void Print(){
+        cout << "[Число: " << number << endl
+             << perfect << endl
+             << prime << endl
+             << "----------------" << endl;
+    }
 };
 
 map<int,vector <int>> user_numbers;
@@ -152,21 +127,43 @@ void isNumMap(int n) {
         user_numbers.emplace(n, (findDivizors(n)));
     };
 };
-int main() {
-    int number = -1; char op; string calc_num1, calc_num2;
-    while (number) {
-        cout << "Меню: \n  \tКаклькулятор - '1'. \n \tПроверка 2 чисел НОД, НОК, простоту, совершенность - '2' \n Ввод: ";
-        cin >> number;
-        if (number == 2) {
+
+
+pair<pair<string,char>,string> decomposition_equation(string equation){
+    char op;string fraction_first = equation,fraction_second = equation;
+    if (equation.find("+")<1000){
+        op = '+';
+        fraction_first = fraction_first.erase(fraction_first.find("+"),80);
+        fraction_second = fraction_second.erase(0,fraction_second.find('+')+1);
+    }else if(equation.find("-")<1000){
+        op = '-';
+        fraction_first = fraction_first.erase(fraction_first.find("-"),80);
+        fraction_second = fraction_second.erase(0,fraction_second.find('-')+1);
+    };
+
+
+    return pair<pair<string,char>,string>{{fraction_first,op},fraction_second};
+}
+
+void output(){
+    string equation = "None";
+    while (equation != "0") {
+        cout << "Ввод: ";
+        cin >> equation;
+        if (equation.find("+",1) > 100000 and equation.find("-",1) > 100000) {
             Numbers num1; Numbers num2;
-            cout << "Калькулятор: \nВведите два числа через пробел: "; cin >> num1.number >> num2.number; cout << "----------------" << endl;
+            cout << " Проверка: \n"; num1.number = num1.solve(equation.substr(equation.find(",")+1,80)) ; num2.number = num2.solve(equation.substr(0,equation.find(",")+2)); cout << "----------------" << endl;
             isNumMap(num1.number);
             num1.perfect = isPerfectNumber(num1.number); num1.prime = IsPrimeNumber(num1.number);num1.Print();
             num2.perfect = isPerfectNumber(num2.number); num2.prime = IsPrimeNumber(num2.number);num2.Print();
-            cout <<"|Наибольшее общий делитель: "<< lcm(num1.number,num2.number) << endl << "|Наименьшее общее кратное: "<< gcd(num1.number,num2.number) <<endl << "----------------" <<endl;
+            cout <<"|Наименьшее общее кратное: "<< lcm(num1.number,num2.number) << endl << "|Наибольшее общий делитель:"<< gcd(num1.number,num2.number) <<endl << "----------------" <<endl;
         }
-        else if (number == 1) {
-            cout << "Проверка: \nВведите первое число: "; cin >> calc_num1; cout << "Введите оператор(+/-): "; cin >> op; cout << "Введите второе число: "; cin >> calc_num2;cout << "Ответ: ";Calc(calc_num1, op, calc_num2);
-        };
-    } return 0;
+        else if (equation.find("+",1) < 1000 or equation.find("-",1) > 0) {
+            cout << "Калькулятор: \n Ответ: ";Calc(decomposition_equation(equation).first.first, decomposition_equation(equation).first.second, decomposition_equation(equation).second);
+        }
+    }
+};
+int main() {
+    output();
+    return 0;
 }
