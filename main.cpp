@@ -133,12 +133,12 @@ pair<pair<string,char>,string> decomposition_equation(string equation){
     char op;string fraction_first = equation,fraction_second = equation;
     if (equation.find("+")<1000){
         op = '+';
-        fraction_first = fraction_first.erase(fraction_first.find("+"),80);
-        fraction_second = fraction_second.erase(0,fraction_second.find('+')+1);
+        fraction_first = fraction_first.erase(fraction_first.find("+",1),80);
+        fraction_second = fraction_second.erase(0,fraction_second.find('+',1)+1);
     }else if(equation.find("-")<1000){
         op = '-';
-        fraction_first = fraction_first.erase(fraction_first.find("-"),80);
-        fraction_second = fraction_second.erase(0,fraction_second.find('-')+1);
+        fraction_first = fraction_first.erase(fraction_first.find("-",1),80);
+        fraction_second = fraction_second.erase(0,fraction_second.find('-',1)+1);
     };
 
 
@@ -149,14 +149,17 @@ void output(){
     string equation = "None";
     while (equation != "0") {
         cout << "Ввод: ";
-        cin >> equation;
+        getline(cin,equation);
         if (equation.find("+",1) > 100000 and equation.find("-",1) > 100000) {
             Numbers num1; Numbers num2;
-            cout << " Проверка: \n"; num1.number = num1.solve(equation.substr(equation.find(",")+1,80)) ; num2.number = num2.solve(equation.substr(0,equation.find(",")+2)); cout << "----------------" << endl;
-            isNumMap(num1.number);
+            cout << " Проверка: \n";
+            num1.number = num1.solve(equation.substr(0,equation.find(" ")+2));
+            num2.number = num2.solve(equation.substr(equation.find(" ")+1,80));
+            cout << "----------------" << endl;
+            //isNumMap(num1.number);
             num1.perfect = isPerfectNumber(num1.number); num1.prime = IsPrimeNumber(num1.number);num1.Print();
             num2.perfect = isPerfectNumber(num2.number); num2.prime = IsPrimeNumber(num2.number);num2.Print();
-            cout <<"|Наименьшее общее кратное: "<< lcm(num1.number,num2.number) << endl << "|Наибольшее общий делитель:"<< gcd(num1.number,num2.number) <<endl << "----------------" <<endl;
+            cout <<"|Наименьшее общее кратное: "<< lcm(num1.number,num2.number) << endl << "|Наименьший общий делитель:"<< gcd(num1.number,num2.number) <<endl << "----------------" <<endl;
         }
         else if (equation.find("+",1) < 1000 or equation.find("-",1) > 0) {
             cout << "Калькулятор: \n Ответ: ";Calc(decomposition_equation(equation).first.first, decomposition_equation(equation).first.second, decomposition_equation(equation).second);
