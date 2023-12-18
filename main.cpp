@@ -4,12 +4,6 @@
 #include <string>
 #include <map>
 using namespace std;
-
-
-
-
-
-
 //функция поиска делителей числа
 map<int, vector <int>> findDivizors(int n, map<int, vector <int>>& user_numbers) {
     vector <int> divizors;
@@ -63,14 +57,12 @@ string isPerfectNumber(int n, map<int, vector <int>>& user_numbers) {
             i++;
         }
     }
-
     if (sum == n) {
         return "|Является совершенным";
     }
     else {
         return "|Не является совершенным";
     }
-
 }
 
 
@@ -79,7 +71,6 @@ string isPerfectNumber(int n, map<int, vector <int>>& user_numbers) {
 pair<int, int> decompos(string isnum) {
     string fraction[2];
     int pos = 0;
-
     for (int i = 0; i < isnum.length(); i++) {
         if (isnum[i] != '/') {
             fraction[pos] = fraction[pos] + isnum[i];
@@ -111,7 +102,7 @@ pair<int, pair<char, int>> Calc(string num1, char op, string num2) {
     }
 }
 
-
+//Класс хранящий число из строки и его свойства + функция вывода
 class Numbers {
 public:
     int number;
@@ -124,7 +115,8 @@ public:
         perfect = isPerfectNumber(number, user_numbers);
         prime = IsPrimeNumber(number, user_numbers);
     }
-    void Print() {
+    void Print(map<int, vector <int>>& user_numbers) {
+        features(user_numbers);
         cout << "[Число: " << number << endl
              << perfect << endl
              << prime << endl
@@ -132,6 +124,7 @@ public:
     }
 };
 
+//Перевод строки в числа и оператор
 pair<pair<string, char>, string> decomposition_equation(string equation) {
     char op; string fraction_first = equation, fraction_second = equation;
     if (equation.find("+") < 1000) {
@@ -192,25 +185,21 @@ const vector <FractionChange> decompos_test = { {"5/6", 5, 6}, {"1/2", 1, 2} };
 
 
 
-
+//Вывод программы
 void output() {
-    string equation = "None";
-    map<int, vector <int>> user_numbers;
+    string equation = "None"; map<int, vector <int>> user_numbers;
     while (equation != "0") {
         cout << "Ввод: ";
         getline(cin, equation);
         if (equation.find("+", 1) > 100000 and equation.find("-", 1) > 100000) {
-
-            Numbers num1; Numbers num2;
+            Numbers first_number; Numbers second_number;
             cout << " Проверка: \n";
-            num1.number = num1.solve(equation.substr(0, equation.find(" ") + 2));
-            num2.number = num2.solve(equation.substr(equation.find(" ") + 1, 80));
-
+            first_number.number = first_number.solve(equation.substr(0, equation.find(" ") + 2));
+            second_number.number = second_number.solve(equation.substr(equation.find(" ") + 1, 80));
             cout << "----------------" << endl;
-            //isNumMap(num1.number);
-            num1.features(user_numbers); num1.Print();
-            num2.features(user_numbers); num2.Print();
-            cout << "|Наименьшее общее кратное: " << lcm(num1.number, num2.number) << endl << "|Наименьший общий делитель:" << gcd(num1.number, num2.number) << endl << "----------------" << endl;
+            first_number.Print(user_numbers);
+            second_number.Print(user_numbers);
+            cout << "|Наименьшее общее кратное: " << lcm(first_number.number, second_number.number) << endl << "|Наименьший общий делитель:" << gcd(first_number.number, second_number.number) << endl << "----------------" << endl;
         }
         else if (equation.find("+", 1) < 1000 or equation.find("-", 1) > 0) {
             cout << "Калькулятор: \n Ответ: "; Calc(decomposition_equation(equation).first.first, decomposition_equation(equation).first.second, decomposition_equation(equation).second);
