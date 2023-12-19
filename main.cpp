@@ -53,11 +53,11 @@ string isPerfectNumber(int n, map<int, vector <int>>& user_numbers) {
     }
     while (i < user_numbers[n].size()) {
         if (i <= n) {
-            sum = sum + i;
+            sum = sum + user_numbers[n].at(i);
             i++;
         }
     }
-    if (sum == n) {
+    if (sum == 2*n) {
         return "|Является совершенным";
     }
     else {
@@ -142,12 +142,17 @@ pair<pair<string, char>, string> decomposition_equation(string equation) {
 
 
 
-/*
-struct isWhat {
+struct FeaturesCheck {
     int a;
     vector <int> b;
     string c;
 };
+
+struct DivizorsCheck {
+    int a;
+    map<int, vector <int>> c;
+};
+
 
 struct FractionChange {
     string a;
@@ -159,35 +164,42 @@ struct StringToNum {
     int b;
 };
 
-const vector <vector<int>> gcd_test = { {14, 28, 14}, {-231, -140, 7}, {0, 0, 0}, {0, 13, 13} };
-const vector <vector<int>> lcm_test = { {14, 28, 14}, {0, 0, 0}, {-231, -140, 4620}, {0, 28, 0} };
-const vector <vector<int>> findDivizors_test = { 25,{1, 5, 25} };
-const vector <isWhat> IsPrimeNumber_test = { {14,{1,2,7,14}, "|Не является простым"}, {0,{}, "|Не является простым"}, {1,{1}, "|Не является простым"}, {11,{1,11}, "|Является простым"} };
-const vector <isWhat> IsPerfectNumber_test = { {14,{1,2,7,14}, "|Не является совершенным"}, {28,{1,2,4,7,14,28},"|Является совершенным"}, {0,{},"|Не является совершенным"}, {-4,{1,2,4}, "|Не является совершенным"} };
+const vector <vector<int>> gcd_test = { {14, 28, 14}, {-231, -140, 7}, {-135, 0, -135}, {0, 13, 13} };
+const vector <vector<int>> lcm_test = { {14, 28, 28}, {-231, -140, 4620}, {-135, 0, 0}, {0, 13, 0} };
+//const vector <DivizorsCheck> findDivizors_test = {25,{25,{1,5,25}}};
+const vector <FeaturesCheck> IsPrimeNumber_test = { {14,{1,2,7,14}, "|Не является простым"}, {0,{}, "|Не является простым"}, {1,{1}, "|Не является простым"}, {11,{1,11}, "|Является простым"} };
+const vector <FeaturesCheck> IsPerfectNumber_test = { {14,{1,2,7,14}, "|Не является совершенным"}, {28,{1,2,4,7,14,28},"|Является совершенным"}, {0,{},"|Не является совершенным"}, {-4,{1,2,4}, "|Не является совершенным"} };
 const vector <FractionChange> decompos_test = { {"5/6", 5, 6}, {"1/2", 1, 2} };
 
- int Tests() {
+void Tests(map<int, vector <int>>& user_numbers) {
     for (auto test : gcd_test) {
         assert(gcd(test[0], test[1]) == test[2]);
     }
     for (auto test : lcm_test) {
         assert(lcm(test[0], test[1]) == test[2]);
     }
+/*     for (auto test : findDivizors_test) {
+        user_numbers[test.a];
+        assert(findDivizors(test.a, user_numbers) == test.b);
+    }
+*/
     for (auto test : IsPrimeNumber_test) {
-        assert(IsPrimeNumber(test.a, test.b) == test.c);
+        user_numbers[test.a] = test.b;
+        assert(IsPrimeNumber(test.a, user_numbers) == test.c);
     }
     for (auto test : IsPerfectNumber_test) {
-        assert(isPerfectNumber(test.a, test.b) == test.c);
+        user_numbers[test.a] = test.b;
+        assert(isPerfectNumber(test.a, user_numbers) == test.c);
     }
-    return 0;
 }
-*/
+
 
 
 
 //Вывод программы
 void output() {
     string equation = "None"; map<int, vector <int>> user_numbers;
+    Tests(user_numbers);
     while (equation != "0") {
         cout << "Ввод: ";
         getline(cin, equation);
@@ -207,7 +219,7 @@ void output() {
     }
 };
 int main() {
-    //Tests();
+
     output();
     return 0;
 }
