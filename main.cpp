@@ -66,25 +66,33 @@ string isPerfectNumber(int n, map<int, vector <int>>& user_numbers) {
 }
 
 
-
-// Получает числитель и знаменатель
-pair<int, int> decompos(string isnum) {
-    string fraction[2];
-    int pos = 0;
-    for (int i = 0; i < isnum.length(); i++) {
-        if (isnum[i] != '/') {
-            fraction[pos] = fraction[pos] + isnum[i];
-        } if (isnum[i] == '/') {
-            pos++;
-        }
+//Перевод строки в числа и оператор
+void decomposition_equation(string equation, map<int,int> &calc_nums,char &op) {
+    string f_first = equation, f_second = equation;
+    if (equation.find("+") < 1000) {
+        op = '+';
+        f_first = f_first.erase(f_first.find("+", 1), 80);
+        f_second = f_second.erase(0, f_second.find('+', 1) + 2);
     }
-    return pair<int, int>(atoi(fraction[0].c_str()), atoi(fraction[1].c_str()));
+    else if (equation.find("-") < 1000) {
+        op = '-';
+        f_first = f_first.erase(f_first.find("-", 1), 80);
+        f_second = f_second.erase(0, f_second.find('-', 1) + 2);
+    };
+    calc_nums[0] = atoi(f_first.substr(0, equation.find("/")).c_str());
+    calc_nums[1] = atoi(f_first.substr(equation.find("/") + 1, 80).c_str());
+    calc_nums[2] = atoi(f_second.substr(0, equation.find("/")).c_str());
+    calc_nums[3] = atoi(f_second.substr(equation.find("/") + 1, 80).c_str());
 }
 
 //Калькулятор
-pair<int, pair<char, int>> Calc(string num1, char op, string num2) {
-    int num1Unfolded[2] = { decompos(num1).first, decompos(num1).second };
-    int num2Unfolded[2] = { decompos(num2).first, decompos(num2).second };
+pair<int, pair<char, int>> Calc(string equation) {
+    char op;
+    map<int,int> calc_nums;
+    decomposition_equation(equation,calc_nums,op);
+    int num1Unfolded[2] = {calc_nums[0],calc_nums[1]};
+    int num2Unfolded[2] = {calc_nums[2],calc_nums[3]};
+
     char slash = '/';
     int numer, denom;
     switch (op) {
@@ -124,21 +132,7 @@ public:
     }
 };
 
-//Перевод строки в числа и оператор
-pair<pair<string, char>, string> decomposition_equation(string equation) {
-    char op; string fraction_first = equation, fraction_second = equation;
-    if (equation.find("+") < 1000) {
-        op = '+';
-        fraction_first = fraction_first.erase(fraction_first.find("+", 1), 80);
-        fraction_second = fraction_second.erase(0, fraction_second.find('+', 1) + 1);
-    }
-    else if (equation.find("-") < 1000) {
-        op = '-';
-        fraction_first = fraction_first.erase(fraction_first.find("-", 1), 80);
-        fraction_second = fraction_second.erase(0, fraction_second.find('-', 1) + 1);
-    };
-    return pair<pair<string, char>, string>{ {fraction_first, op}, fraction_second};
-}
+
 
 
 
@@ -214,7 +208,7 @@ void output() {
             cout << "|Наименьшее общее кратное: " << lcm(first_number.number, second_number.number) << endl << "|Наименьший общий делитель:" << gcd(first_number.number, second_number.number) << endl << "----------------" << endl;
         }
         else if (equation.find("+", 1) < 1000 or equation.find("-", 1) > 0) {
-            cout << "Калькулятор: \n Ответ: "; Calc(decomposition_equation(equation).first.first, decomposition_equation(equation).first.second, decomposition_equation(equation).second);
+            cout << "Калькулятор: \n Ответ: "; Calc(equation);
         }
     }
 };
