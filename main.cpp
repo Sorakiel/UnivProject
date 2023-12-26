@@ -86,7 +86,7 @@ void decomposition_equation(string equation, map<int,int> &calc_nums,char &op) {
 }
 
 //Калькулятор
-pair<int, pair<char, int>> Calc(string equation) {
+pair<int, int> Calc(string equation) {
     char op;
     map<int,int> calc_nums;
     decomposition_equation(equation,calc_nums,op);
@@ -100,12 +100,12 @@ pair<int, pair<char, int>> Calc(string equation) {
             numer = num1Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num1Unfolded[1]) + num2Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num2Unfolded[1]);
             denom = lcm(num1Unfolded[1], num2Unfolded[1]);
             cout << numer << '/' << denom << endl;
-            return { numer, {slash, denom} };
+            return { numer, denom};
         case '-':
             numer = num1Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num1Unfolded[1]) - num2Unfolded[0] * (lcm(num1Unfolded[1], num2Unfolded[1]) / num2Unfolded[1]);
             denom = lcm(num1Unfolded[1], num2Unfolded[1]);
             cout << numer << '/' << denom << endl;
-            return { numer, {slash, denom} };
+            return { numer, denom};
         default:    cout << "op is undefined";
     }
 }
@@ -132,19 +132,15 @@ public:
     }
 };
 
-
-
-
-
 struct FeaturesCheck {
     int a;
     vector <int> b;
     string c;
 };
 
-struct DivizorsCheck {
-    int a;
-    map<int, vector <int>> b;
+struct CalcCheck {
+    string a;
+    pair<int, int> b;
 };
 
 
@@ -158,9 +154,10 @@ struct StringToNum {
     int b;
 };
 
+
 const vector <vector<int>> gcd_test = { {14, 28, 14}, {-231, -140, 7}, {-135, 0, -135}, {0, 13, 13} };
 const vector <vector<int>> lcm_test = { {14, 28, 28}, {-231, -140, 4620}, {-135, 0, 0}, {0, 13, 0} };
-const vector<DivizorsCheck> findDivizors_test = {{25, {{25, {1, 5, 25}}}}};
+const vector <CalcCheck> calc_test = {{"1/2 + 1/2",{2,2}}};
 const vector <FeaturesCheck> IsPrimeNumber_test = { {14,{1,2,7,14}, "|Не является простым"}, {0,{}, "|Не является простым"}, {1,{1}, "|Не является простым"}, {11,{1,11}, "|Является простым"} };
 const vector <FeaturesCheck> IsPerfectNumber_test = { {14,{1,2,7,14}, "|Не является совершенным"}, {28,{1,2,4,7,14,28},"|Является совершенным"}, {0,{},"|Не является совершенным"}, {-4,{1,2,4}, "|Не является совершенным"} };
 
@@ -172,11 +169,9 @@ void Tests(map<int, vector <int>>& user_numbers) {
     for (auto test : lcm_test) {
         assert(lcm(test[0], test[1]) == test[2]);
     }
-    for (auto test : findDivizors_test) {
-        vector<int> divizors = findDivizors(test.a, user_numbers);
-        assert(divizors == test.b[test.a]);
+    for (auto test : calc_test) {
+        assert(Calc(test.a) == test.b);
     }
-
     for (auto test : IsPrimeNumber_test) {
         user_numbers[test.a] = test.b;
         assert(IsPrimeNumber(test.a, user_numbers) == test.c);
