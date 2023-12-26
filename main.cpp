@@ -144,7 +144,7 @@ struct FeaturesCheck {
 
 struct DivizorsCheck {
     int a;
-    map<int, vector <int>> c;
+    map<int, vector <int>> b;
 };
 
 
@@ -160,10 +160,10 @@ struct StringToNum {
 
 const vector <vector<int>> gcd_test = { {14, 28, 14}, {-231, -140, 7}, {-135, 0, -135}, {0, 13, 13} };
 const vector <vector<int>> lcm_test = { {14, 28, 28}, {-231, -140, 4620}, {-135, 0, 0}, {0, 13, 0} };
-//const vector <DivizorsCheck> findDivizors_test = {25,{25,{1,5,25}}};
+const vector<DivizorsCheck> findDivizors_test = {{25, {{25, {1, 5, 25}}}}};
 const vector <FeaturesCheck> IsPrimeNumber_test = { {14,{1,2,7,14}, "|Не является простым"}, {0,{}, "|Не является простым"}, {1,{1}, "|Не является простым"}, {11,{1,11}, "|Является простым"} };
 const vector <FeaturesCheck> IsPerfectNumber_test = { {14,{1,2,7,14}, "|Не является совершенным"}, {28,{1,2,4,7,14,28},"|Является совершенным"}, {0,{},"|Не является совершенным"}, {-4,{1,2,4}, "|Не является совершенным"} };
-const vector <FractionChange> decompos_test = { {"5/6", 5, 6}, {"1/2", 1, 2} };
+
 
 void Tests(map<int, vector <int>>& user_numbers) {
     for (auto test : gcd_test) {
@@ -172,11 +172,11 @@ void Tests(map<int, vector <int>>& user_numbers) {
     for (auto test : lcm_test) {
         assert(lcm(test[0], test[1]) == test[2]);
     }
-/*     for (auto test : findDivizors_test) {
-        user_numbers[test.a];
-        assert(findDivizors(test.a, user_numbers) == test.b);
+    for (auto test : findDivizors_test) {
+        vector<int> divizors = findDivizors(test.a, user_numbers);
+        assert(divizors == test.b[test.a]);
     }
-*/
+
     for (auto test : IsPrimeNumber_test) {
         user_numbers[test.a] = test.b;
         assert(IsPrimeNumber(test.a, user_numbers) == test.c);
@@ -205,7 +205,7 @@ void output() {
             cout << "----------------" << endl;
             first_number.Print(user_numbers);
             second_number.Print(user_numbers);
-            cout << "|Наименьшее общее кратное: " << lcm(first_number.number, second_number.number) << endl << "|Наименьший общий делитель:" << gcd(first_number.number, second_number.number) << endl << "----------------" << endl;
+            cout << "|Наименьшее общее кратное: " << lcm(first_number.number, second_number.number) << endl << "|Наибольший общий делитель:" << gcd(first_number.number, second_number.number) << endl << "----------------" << endl;
         }
         else if (equation.find("+", 1) < 1000 or equation.find("-", 1) > 0) {
             cout << "Калькулятор: \n Ответ: "; Calc(equation);
@@ -213,7 +213,6 @@ void output() {
     }
 };
 int main() {
-
     output();
     return 0;
 }
